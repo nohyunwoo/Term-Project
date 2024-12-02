@@ -1,7 +1,5 @@
 package ui;
 
-//import services.AdminService;
-
 import java.util.Scanner;
 
 public class AdminMenu {
@@ -27,38 +25,39 @@ public class AdminMenu {
 
             System.out.print("선택하세요: ");
             int choice = scanner.nextInt();
-
+            
+            
             switch (choice) {
-                case 1:
-                    adminService.viewClubs(); // 클럽 조회 기능
-                    break;
-                case 2:
-                    adminService.addClub(); // 클럽 추가 기능
-                    break;
-                case 3:
-                    adminService.deleteClub(); // 클럽 삭제 기능
-                    break;
-                case 4:
-                    adminService.viewStudyGroups(); // 스터디 조회 기능
-                    break;
-                case 5:
-                    adminService.addStudyGroup(); // 스터디 추가 기능
-                    break;
-                case 6:
-                    adminService.deleteStudyGroup(); // 스터디 삭제 기능
-                    break;
-                case 7:
-                    adminService.viewStudentRoles(); // 학생 역할 조회 기능
-                    break;
-                case 8:
-                    adminService.addStudentRole(); // 학생 역할 추가 기능
-                    break;
-                case 9:
-                    adminService.deleteStudentRole(); // 학생 역할 삭제 기능
-                    break;
-                case 10:
-                    adminService.processEnrollmentRequest(); // 가입 요청 승인/거절
-                    break;
+//                case 1:
+//                    adminService.viewClubs(); // 클럽 조회 기능
+//                    break;
+//                case 2:
+//                    adminService.addClub(); // 클럽 추가 기능
+//                    break;
+//                case 3:
+//                    adminService.deleteClub(); // 클럽 삭제 기능
+//                    break;
+//                case 4:
+//                    AdminService.viewStudyGroups(); // 스터디 조회 기능
+//                    break;
+//                case 5:
+//                    AdminService.addStudyGroup(); // 스터디 추가 기능
+//                    break;
+//                case 6:
+//                    AdminService.deleteStudyGroup(); // 스터디 삭제 기능
+//                    break;
+//                case 7:
+//                    AdminService.viewStudentRoles(); // 학생 역할 조회 기능
+//                    break;
+//                case 8:
+//                    AdminService.addStudentRole(); // 학생 역할 추가 기능
+//                    break;
+//                case 9:
+//                    AdminService.deleteStudentRole(); // 학생 역할 삭제 기능
+//                    break;
+//                case 10:
+//                    AdminService.processEnrollmentRequest(); // 가입 요청 승인/거절
+//                    break;
                 case 11:
                     System.out.println("메인 메뉴로 돌아갑니다.");
                     return;

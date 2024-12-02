@@ -3,6 +3,7 @@ package ui;
 //import services.StudentService;
 
 import java.util.Scanner;
+import service.StudentService;
 
 public class StudentMenu {
     public static void showMenu() {
@@ -21,22 +22,22 @@ public class StudentMenu {
             System.out.print("선택하세요: ");
             int choice = scanner.nextInt();
 
-            switch (choice) {
-                case 1:
-                    studentService.applyForClub(); // 클럽 가입 신청 기능
-                    break;
-                case 2:
-                    studentService.applyForStudyGroup(); // 스터디 가입 신청 기능
-                    break;
-                case 3:
-                    studentService.viewEnrollmentStatus(); // 가입 신청 상태 조회
-                    break;
-                case 4:
-                    System.out.println("메인 메뉴로 돌아갑니다.");
-                    return;
-                default:
-                    System.out.println("잘못된 입력입니다. 다시 시도하세요.");
-            }
+//            switch (choice) {
+//                case 1:
+//                    StudentService.applyForClub(); // 클럽 가입 신청 기능
+//                    break;
+//                case 2:
+//                	StudentService.applyForStudyGroup(); // 스터디 가입 신청 기능
+//                    break;
+//                case 3:
+//                	StudentService.viewEnrollmentStatus(); // 가입 신청 상태 조회
+//                    break;
+//                case 4:
+//                    System.out.println("메인 메뉴로 돌아갑니다.");
+//                    return;
+//                default:
+//                    System.out.println("잘못된 입력입니다. 다시 시도하세요.");
+//            }
         }
     }
 }
