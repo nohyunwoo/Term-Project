@@ -1,14 +1,14 @@
 package entity;
 
-public class ClubRepresentative {
+public class ClubMember {
     private int clubId; // PK, FK
     private int studentId; // FK
 
     // 기본 생성자
-    public ClubRepresentative() {}
+    public ClubMember() {}
 
     // 생성자
-    public ClubRepresentative(int clubId, int studentId) {
+    public ClubMember(int clubId, int studentId) {
         this.clubId = clubId;
         this.studentId = studentId;
     }

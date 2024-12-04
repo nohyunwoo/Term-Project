@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import entity.Club;
 import entity.EnrollmentRequest;
 import entity.Student;
+import entity.StudyGroup;
 
 public class StudentService {
 
@@ -74,18 +75,81 @@ public class StudentService {
     // 스터디 가입 신청
     public static void applyForStudyGroup() {
         Scanner scanner = new Scanner(System.in);
+        
+        try (Connection connection = DatabaseConnection.getConnection()) {
+	        // SQL 실행
+	        String query = "SELECT ClubID, ClubName, UniversityName FROM CLUB";
+	        Statement statement = connection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query);
 
-        System.out.println("스터디가 속한 동아리 ID를 입력하세요: ");
+	        System.out.println("Clubs List:");
+	        while (resultSet.next()) {
+	            // Club 객체 생성 및 데이터 설정
+	            Club club = new Club();
+	            club.setClubId(resultSet.getInt("ClubID"));
+	            club.setClubName(resultSet.getString("ClubName"));
+
+	            // Club 객체 데이터 출력
+	            System.out.printf("Club ID: %d, Name: %s%n", club.getClubId(), club.getClubName());
+	        }
+
+	    } catch (Exception e) {
+	        System.err.println("Error occurred while fetching clubs: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+        
+        System.out.println("학생이 소속된 동아리 ID를 입력하세요: ");
         int clubId = scanner.nextInt();
 
         System.out.println("학생 ID를 입력하세요: ");
         int studentId = scanner.nextInt();
+        
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            // SQL 실행: 해당 ClubID에 속한 스터디 그룹 정보 가져오기
+            String query = "SELECT StudyGroupID, StudyGroupName, ClubID FROM STUDY_GROUP WHERE ClubID = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, clubId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            System.out.println("Study Groups List for Club ID: " + clubId);
+            System.out.println("=====================================");
+
+            boolean hasResults = false;
+
+            while (resultSet.next()) {
+                hasResults = true;
+
+                // StudyGroup 객체 생성 및 데이터 설정
+                StudyGroup studyGroup = new StudyGroup();
+                studyGroup.setStudyGroupId(resultSet.getInt("StudyGroupID"));
+                studyGroup.setStudyGroupName(resultSet.getString("StudyGroupName"));
+                studyGroup.setClubId(resultSet.getInt("ClubID"));
+
+                // StudyGroup 객체 데이터 출력
+                System.out.printf("Study Group ID: %d, Name: %s%n", 
+                                  studyGroup.getStudyGroupId(), 
+                                  studyGroup.getStudyGroupName());
+            }
+
+            if (!hasResults) {
+                System.out.println("해당 클럽에 등록된 스터디 그룹이 없습니다.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("스터디 그룹 조회 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        
+        System.out.println("가입하고 싶은 스터디ID를 입력하세요: ");
+        int studentGroupId = scanner.nextInt();
 
         // EnrollmentRequest 객체 생성 및 값 설정
         EnrollmentRequest request = new EnrollmentRequest();
         request.setStudentId(studentId);
         request.setClubId(clubId); // 동아리 ID 설정
-        request.setStudyGroupId(null); // 스터디 가입 신청이므로 NULL
+        request.setStudyGroupId(studentGroupId); // 스터디 ID 설정
         request.setStatus("pending"); // 기본 상태
         request.setRequestDate(java.time.LocalDate.now().toString()); // 현재 날짜 설정
 
@@ -98,7 +162,7 @@ public class StudentService {
             preparedStatement.setString(2, request.getRequestDate());
             preparedStatement.setInt(3, request.getStudentId());
             preparedStatement.setInt(4, request.getClubId()); // ClubID는 입력받은 값
-            preparedStatement.setNull(5, java.sql.Types.INTEGER); // StudyGroupID는 NULL
+            preparedStatement.setInt(5, request.getStudyGroupId()); // StudyGroupID는 입력받은 값
 
             int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted > 0) {
