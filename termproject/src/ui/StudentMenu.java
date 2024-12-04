@@ -14,10 +14,10 @@ public class StudentMenu {
             System.out.println("=================================");
             System.out.println("학생 메뉴");
             System.out.println("1. 학생 정보 기입");
-            System.out.println("2. 클럽 가입 신청");
+            System.out.println("2. 동아리 가입 신청");
             System.out.println("3. 스터디 가입 신청");
             System.out.println("4. 가입 신청 상태 조회");
-            System.out.println("5. 메인 메뉴로 돌아가기");
+            System.out.println("5. 메인 메뉴");
             System.out.println("=================================");
 
             System.out.print("선택하세요: ");
@@ -25,23 +25,22 @@ public class StudentMenu {
 
             switch (choice) {
             	case 1:
-            		StudentService.addStudentInfo();
+            		StudentService.addStudentInfo(); // 학생 정보 기입 기능
             		break;
             	case 2:
-                    StudentService.applyForClub(); // 클럽 가입 신청 기능
+                    StudentService.applyForClub(); // 동아리 가입 신청 기능
                     break;
-//                case 3:
-//                	StudentService.applyForStudyGroup(); // 스터디 가입 신청 기능
-//                    break;
-//                case 4:
-//                	StudentService.viewEnrollmentStatus(); // 가입 신청 상태 조회
-//                    break;
-              
-//                case 4:
-//                    System.out.println("메인 메뉴로 돌아갑니다.");
-//                    return;
-//                default:
-//                    System.out.println("잘못된 입력입니다. 다시 시도하세요.");
+                case 3:
+                	StudentService.applyForStudyGroup(); // 스터디 가입 신청 기능
+                    break;
+                case 4:
+                	StudentService.viewEnrollmentStatus(); // 가입 신청 상태 조회
+                    break;
+                case 5:
+                    System.out.println("메인 메뉴");
+                    return;
+                default:
+                    System.out.println("잘못된 입력입니다. 다시 시도하세요.");
             }
         }
     }

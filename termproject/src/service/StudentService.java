@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
 import java.sql.PreparedStatement;
+
+import entity.Club;
 import entity.EnrollmentRequest;
 import entity.Student;
 
@@ -20,10 +22,10 @@ public class StudentService {
         int choice = scanner.nextInt();
 
         if (choice == 1) {
-            // 동아리 가입 신청
-            applyForClub();
+            // 동아리 생성 신청
+            createForClub();
         } else if (choice == 2) {
-            // 스터디 가입 신청
+            // 스터디 생성 신청
             applyForStudyGroup();
         } else {
             System.out.println("잘못된 선택입니다. 다시 시도하세요.");
@@ -31,7 +33,7 @@ public class StudentService {
     }
 
     // 동아리 가입 신청
-    public static void applyForClub() {
+    public static void createForClub() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("학생 ID를 입력하세요: ");
@@ -170,7 +172,121 @@ public class StudentService {
                 e.printStackTrace();
             }
         }
-    
+        
+        public static void applyForClub() {
+        	try (Connection connection = DatabaseConnection.getConnection()) {
+    	        // SQL 실행
+    	        String query = "SELECT ClubID, ClubName, UniversityName FROM CLUB";
+    	        Statement statement = connection.createStatement();
+    	        ResultSet resultSet = statement.executeQuery(query);
+
+    	        System.out.println("Clubs List:");
+    	        while (resultSet.next()) {
+    	            // Club 객체 생성 및 데이터 설정
+    	            Club club = new Club();
+    	            club.setClubId(resultSet.getInt("ClubID"));
+    	            club.setClubName(resultSet.getString("ClubName"));
+
+    	            // Club 객체 데이터 출력
+    	            System.out.printf("Club ID: %d, Name: %s%n", club.getClubId(), club.getClubName());
+    	        }
+
+    	    } catch (Exception e) {
+    	        System.err.println("Error occurred while fetching clubs: " + e.getMessage());
+    	        e.printStackTrace();
+    	    }
+        	
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.println("가입하려는 동아리 ID를 입력하세요: ");
+            int clubId = scanner.nextInt();
+
+            System.out.println("학생 ID를 입력하세요: ");
+            int studentId = scanner.nextInt();
+
+            // EnrollmentRequest 객체 생성 및 값 설정
+            EnrollmentRequest request = new EnrollmentRequest();
+            request.setStudentId(studentId);
+            request.setClubId(clubId); // 동아리 ID 설정
+            request.setStudyGroupId(null); // 스터디 가입 아님
+            request.setStatus("pending"); // 기본 상태 설정
+            request.setRequestDate(java.time.LocalDate.now().toString()); // 현재 날짜 설정
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                // SQL 실행
+                String query = "INSERT INTO ENROLLMENT_REQUEST (Status, RequestDate, StudentID, ClubID, StudyGroupID) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+                preparedStatement.setString(1, request.getStatus());
+                preparedStatement.setString(2, request.getRequestDate());
+                preparedStatement.setInt(3, request.getStudentId());
+                preparedStatement.setInt(4, request.getClubId()); // ClubID는 입력받은 값
+                preparedStatement.setNull(5, java.sql.Types.INTEGER); // StudyGroupID는 NULL
+
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("동아리 가입 신청이 성공적으로 제출되었습니다!");
+                } else {
+                    System.out.println("동아리 가입 신청에 실패했습니다.");
+                }
+
+            } catch (Exception e) {
+                System.err.println("동아리 가입 신청 중 오류 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
+        public static void viewEnrollmentStatus() {
+            Scanner scanner = new Scanner(System.in);
+
+            // 사용자로부터 StudentID 입력 받기
+            System.out.println("조회할 학생 ID를 입력하세요: ");
+            int studentId = scanner.nextInt();
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                // SQL 쿼리: ENROLLMENT_REQUEST 테이블에서 해당 학생의 요청 상태 조회
+                String query = "SELECT RequestID, ClubID, StudyGroupID, Status, RequestDate " +
+                               "FROM ENROLLMENT_REQUEST " +
+                               "WHERE StudentID = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, studentId);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                System.out.println("Enrollment Requests for Student ID: " + studentId);
+                System.out.println("=================================================");
+                boolean hasResults = false; // 결과가 있는지 확인하기 위한 플래그
+
+                while (resultSet.next()) {
+                    hasResults = true;
+                    int requestId = resultSet.getInt("RequestID");
+                    Integer clubId = resultSet.getInt("ClubID");
+                    if (resultSet.wasNull()) clubId = null; // NULL 처리
+                    Integer studyGroupId = resultSet.getInt("StudyGroupID");
+                    if (resultSet.wasNull()) studyGroupId = null; // NULL 처리
+                    String status = resultSet.getString("Status");
+                    String requestDate = resultSet.getString("RequestDate");
+
+                    // 결과 출력
+                    System.out.printf("Request ID: %d, Club ID: %s, Study Group ID: %s, Status: %s, Date: %s%n",
+                            requestId,
+                            clubId == null ? "N/A" : clubId.toString(),
+                            studyGroupId == null ? "N/A" : studyGroupId.toString(),
+                            status,
+                            requestDate);
+                }
+
+                if (!hasResults) {
+                    System.out.println("해당 학생의 가입 신청 상태가 없습니다.");
+                }
+
+            } catch (Exception e) {
+                System.err.println("가입 신청 상태 조회 중 오류 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
+        
 }
 
 
