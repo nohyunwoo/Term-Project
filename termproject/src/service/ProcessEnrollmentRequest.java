@@ -33,7 +33,10 @@ public class ProcessEnrollmentRequest {
 	            System.out.printf("Request ID: %d, Student ID: %d, Club ID: %d, StudyGroupID: %d, Status: %s%n",
 	                    requestId, studentId, clubId, studyGroupId, status);
 	        }
-
+	        
+	        System.out.println("관리자 ID를 입력하세요: ");
+	        int adminId = scanner.nextInt();
+	        
 	        // 2. 처리할 요청 ID 선택
 	        System.out.println("처리할 요청의 ID를 입력하세요: ");
 	        int selectedRequestId = scanner.nextInt();
@@ -43,9 +46,9 @@ public class ProcessEnrollmentRequest {
 	        String action = scanner.next();
 
 	        if (action.equalsIgnoreCase("accept")) {
-	            handleAcceptRequest(connection, selectedRequestId);
+	            handleAcceptRequest(connection, selectedRequestId, adminId);
 	        } else if (action.equalsIgnoreCase("reject")) {
-	            handleRejectRequest(connection, selectedRequestId);
+	            handleRejectRequest(connection, selectedRequestId, adminId);
 	        } else {
 	            System.out.println("잘못된 입력입니다. 다시 시도하세요.");
 	        }
@@ -56,7 +59,7 @@ public class ProcessEnrollmentRequest {
 	    }
 	}
 
-	private static void handleAcceptRequest(Connection connection, int requestId) throws Exception {
+	private static void handleAcceptRequest(Connection connection, int requestId, int adminId) throws Exception {
 	    // 승인된 요청 정보 가져오기
 	    String fetchRequestQuery = "SELECT StudentID, ClubID, StudyGroupID FROM ENROLLMENT_REQUEST WHERE RequestID = ?";
 	    PreparedStatement fetchStmt = connection.prepareStatement(fetchRequestQuery);
@@ -70,10 +73,10 @@ public class ProcessEnrollmentRequest {
 
 	        if (studyGroupId != 0) {
 	            // 스터디 그룹에 대한 요청 처리
-	            handleStudyGroupRequest(connection, studentId, studyGroupId, requestId);
+	            handleStudyGroupRequest(connection, studentId, studyGroupId, requestId, adminId);
 	        } else if (clubId != 0) {
 	            // 동아리에 대한 요청 처리
-	            handleClubRequest(connection, studentId, clubId, requestId);
+	            handleClubRequest(connection, studentId, clubId, requestId, adminId);
 	        } else {
 	            System.out.println("요청에 유효한 ClubID 또는 StudyGroupID가 없습니다.");
 	        }
@@ -83,7 +86,7 @@ public class ProcessEnrollmentRequest {
 	}
 
 	// 동아리 요청 처리
-	private static void handleClubRequest(Connection connection, int studentId, int clubId, int requestId) throws Exception {
+	private static void handleClubRequest(Connection connection, int studentId, int clubId, int requestId, int adminId) throws Exception {
 	    // CLUB_MEMBER 테이블에 학생 추가
 	    String insertMemberQuery = "INSERT INTO CLUB_MEMBER (ClubID, StudentID) VALUES (?, ?)";
 	    PreparedStatement insertStmt = connection.prepareStatement(insertMemberQuery);
@@ -95,14 +98,14 @@ public class ProcessEnrollmentRequest {
 	        System.out.println("학생이 동아리에 성공적으로 추가되었습니다!");
 
 	        // 요청 상태를 'accept'로 업데이트
-	        updateRequestStatus(connection, requestId, "accept");
+	        updateRequestStatus(connection, requestId, "accept", adminId);
 	    } else {
 	        System.out.println("학생 추가에 실패했습니다.");
 	    }
 	}
 
 	// 스터디 그룹 요청 처리
-	private static void handleStudyGroupRequest(Connection connection, int studentId, int studyGroupId, int requestId) throws Exception {
+	private static void handleStudyGroupRequest(Connection connection, int studentId, int studyGroupId, int requestId, int adminId) throws Exception {
 	    // STUDY_GROUP_MEMBER 테이블에 학생 추가
 	    String insertMemberQuery = "INSERT INTO STUDY_GROUP_MEMBER (StudyGroupID, StudentID) VALUES (?, ?)";
 	    PreparedStatement insertStmt = connection.prepareStatement(insertMemberQuery);
@@ -114,26 +117,33 @@ public class ProcessEnrollmentRequest {
 	        System.out.println("학생이 스터디 그룹에 성공적으로 추가되었습니다!");
 
 	        // 요청 상태를 'accept'로 업데이트
-	        updateRequestStatus(connection, requestId, "accept");
+	        updateRequestStatus(connection, requestId, "accept", adminId);
 	    } else {
 	        System.out.println("스터디 그룹에 학생 추가에 실패했습니다.");
 	    }
 	}
 
-	// 요청 상태 업데이트
-	private static void updateRequestStatus(Connection connection, int requestId, String status) throws Exception {
+	private static void updateRequestStatus(Connection connection, int requestId, String status, int adminId) throws Exception {
+	    // 요청 상태 업데이트
 	    String updateStatusQuery = "UPDATE ENROLLMENT_REQUEST SET Status = ? WHERE RequestID = ?";
-	    PreparedStatement updateStmt = connection.prepareStatement(updateStatusQuery);
-	    updateStmt.setString(1, status);
-	    updateStmt.setInt(2, requestId);
-	    updateStmt.executeUpdate();
+	    try (PreparedStatement updateStmt = connection.prepareStatement(updateStatusQuery)) {
+	        updateStmt.setString(1, status);
+	        updateStmt.setInt(2, requestId);
+	        int rowsUpdated = updateStmt.executeUpdate();
+
+	        if (rowsUpdated > 0) {
+	            System.out.println("요청 상태가 '" + status + "'로 업데이트되었습니다.");
+
+	            // ENROLLMENT_REQUEST_ADMIN 테이블에 데이터 추가
+	            addToEnrollmentRequestAdmin(connection, requestId, adminId);
+	        } else {
+	            System.out.println("요청 상태 업데이트에 실패했습니다.");
+	        }
+	    }
 	}
 
-
-
-
     // 요청 거절 처리
-    private static void handleRejectRequest(Connection connection, int requestId) throws Exception {
+    private static void handleRejectRequest(Connection connection, int requestId, int adminId) throws Exception {
         // 요청 상태를 'reject'로 업데이트
         String updateStatusQuery = "UPDATE ENROLLMENT_REQUEST SET Status = 'reject' WHERE RequestID = ?";
         PreparedStatement updateStmt = connection.prepareStatement(updateStatusQuery);
@@ -142,8 +152,29 @@ public class ProcessEnrollmentRequest {
         int rowsUpdated = updateStmt.executeUpdate();
         if (rowsUpdated > 0) {
             System.out.println("요청이 거절되었습니다.");
+            addToEnrollmentRequestAdmin(connection, requestId, adminId);
         } else {
             System.out.println("요청 ID를 찾을 수 없습니다.");
         }
     }
+    
+    private static void addToEnrollmentRequestAdmin(Connection connection, int requestId, int adminId) throws Exception {
+        String processDate = java.time.LocalDate.now().toString(); // 현재 날짜
+
+        String insertQuery = "INSERT INTO ENROLLMENT_REQUEST_ADMIN (RequestID, AdminID, ProcessDate) VALUES (?, ?, ?)";
+        try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
+            insertStmt.setInt(1, requestId);
+            insertStmt.setInt(2, adminId);
+            insertStmt.setString(3, processDate);
+
+            int rowsInserted = insertStmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("ENROLLMENT_REQUEST_ADMIN 테이블에 데이터가 추가되었습니다.");
+            } else {
+                System.out.println("ENROLLMENT_REQUEST_ADMIN 테이블에 데이터 추가에 실패했습니다.");
+            }
+        }
+    }
+
+    
 }

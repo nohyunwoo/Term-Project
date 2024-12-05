@@ -352,6 +352,34 @@ public class AdminService {
 	        e.printStackTrace();
 	    }
 	}
+	
+	public static void viewAllStudents() {
+	    try (Connection connection = DatabaseConnection.getConnection()) {
+	        // SQL 쿼리 실행
+	        String query = "SELECT StudentID, Name, Age, Sex, PhoneNumber, UniversityName FROM STUDENT";
+	        Statement statement = connection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query);
+
+	        System.out.println("전체 학생 정보:");
+	        System.out.println("========================================");
+	        System.out.printf("%-10s %-20s %-5s %-5s %-15s %-20s%n", "StudentID", "Name", "Age", "Sex", "PhoneNumber", "UniversityName");
+	        System.out.println("========================================");
+
+	        while (resultSet.next()) {
+	            int studentId = resultSet.getInt("StudentID");
+	            String name = resultSet.getString("Name");
+	            int age = resultSet.getInt("Age");
+	            String sex = resultSet.getString("Sex");
+	            String phoneNumber = resultSet.getString("PhoneNumber");
+	            String universityName = resultSet.getString("UniversityName");
+
+	            System.out.printf("%-10d %-20s %-5d %-5s %-15s %-20s%n", studentId, name, age, sex, phoneNumber, universityName);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("학생 정보 조회 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
 
     
     

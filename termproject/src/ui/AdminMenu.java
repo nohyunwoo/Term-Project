@@ -11,15 +11,9 @@ public class AdminMenu {
 
         while (true) {
             System.out.println("=================================");
-            System.out.println("관리자 메뉴");
-            System.out.println("1. 동아리 조회");
-            System.out.println("2. 동아리 추가");
-            System.out.println("3. 동아리 삭제");
-            System.out.println("4. 동아리 멤버 조회");
-            System.out.println("5. 스터디 조회");
-            System.out.println("6. 스터디 추가");
-            System.out.println("8. 스터디 멤버 조회");
-            System.out.println("10. 가입 요청 승인/거절");
+            System.out.println("1. 동아리 조회 | 2. 동아리 추가 | 3. 동아리 삭제");
+            System.out.println("4. 동아리 멤버 조회 | 5. 스터디 조회 | 6. 스터디 추가");
+            System.out.println("7. 스터디 멤버 조회 | 8. 전체 학생 조회 | 10. 가입 요청 승인/거절");
             System.out.println("11. 메인 메뉴로 돌아가기");
             System.out.println("=================================");
 
@@ -45,11 +39,11 @@ public class AdminMenu {
                 case 6:
                     AdminService.addStudyGroup(); // 스터디 추가 
                     break;
-//                case 8:
-//                    AdminService.deleteStudyGroup(); // 스터디 멤버 조회 
-//                    break;
-                case 8:
+                case 7:
                     AdminService.viewStudyGroupMembersByClub(); // 스터디 멤버 조회 
+                    break;
+                case 8:
+                    AdminService. viewAllStudents(); // 전체 학생 조회
                     break;
                 case 10:
                 	ProcessEnrollmentRequest.processEnrollmentRequest(); // 가입 요청 승인/거절
