@@ -7,7 +7,7 @@ public class SelectMenu {
     public static void displayMenu() {
         System.out.println("1. 관리자");
         System.out.println("2. 학생");
-        System.out.println("0. 종료");
+        System.out.println("0. 외부인");
     }
 
     public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class SelectMenu {
 
         while (true) {
             displayMenu();
-            System.out.print("선택하세요: ");
+            System.out.print("누구십니까?: ");
             choice = scanner.nextInt();
 
             switch (choice) {

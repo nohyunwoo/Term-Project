@@ -10,14 +10,14 @@ public class AdminMenu {
 //        AdminService adminService = new AdminService();
 
         while (true) {
-            System.out.println("=================================");
-            System.out.println("1. 동아리 조회 | 2. 동아리 추가 | 3. 동아리 삭제");
-            System.out.println("4. 동아리 멤버 조회 | 5. 스터디 조회 | 6. 스터디 추가");
-            System.out.println("7. 스터디 멤버 조회 | 8. 전체 학생 조회 | 10. 가입 요청 승인/거절");
-            System.out.println("11. 메인 메뉴로 돌아가기");
-            System.out.println("=================================");
+            System.out.println("**************************************************************************");
+            System.out.println("1. 동아리 조회 		    2. 동아리 추가 		    3. 동아리 삭제");
+            System.out.println("4. 동아리 멤버 조회	    	    5. 스터디 조회		    6. 스터디 추가");
+            System.out.println("7. 스터디 삭제		    8. 스터디 멤버 조회 	    9. 전체 학생 조회");
+            System.out.println("10. 요청 처리 기록 조회   	    11. 가입 요청 승인/거절      12. 메인 메뉴로");
+            System.out.println("**************************************************************************");
 
-            System.out.print("선택하세요: ");
+            System.out.print("업무 번호를 입력하세요: ");
             int choice = scanner.nextInt();
             
             
@@ -40,15 +40,21 @@ public class AdminMenu {
                     AdminService.addStudyGroup(); // 스터디 추가 
                     break;
                 case 7:
+                    AdminService.deleteStudyGroup(); // 스터디 삭제
+                    break;   
+                case 8:
                     AdminService.viewStudyGroupMembersByClub(); // 스터디 멤버 조회 
                     break;
-                case 8:
+                case 9:
                     AdminService. viewAllStudents(); // 전체 학생 조회
                     break;
                 case 10:
-                	ProcessEnrollmentRequest.processEnrollmentRequest(); // 가입 요청 승인/거절
+                    AdminService. viewEnrollmentRequestAdminRecords(); // 요청 처리 기록 조회
                     break;
                 case 11:
+                	ProcessEnrollmentRequest.processEnrollmentRequest(); // 가입 요청 승인/거절
+                    break;
+                case 12:
                     System.out.println("메인 메뉴로 돌아갑니다.");
                     return;
                 default:

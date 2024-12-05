@@ -10,12 +10,12 @@ public class StudentMenu {
         while (true) {
             System.out.println("*********************************");
             System.out.println("학생 메뉴");
-            System.out.println("1. 학생 정보 기입 | 2. 동아리 가입 신청");
-            System.out.println("3. 스터디 가입 신청 | 4. 가입 신청 상태 조회");
+            System.out.println("1. 학생 정보 기입    2. 동아리 가입 신청");
+            System.out.println("3. 스터디 가입 신청	 4. 가입 신청 상태 조회");
             System.out.println("5. 메인 메뉴로");
             System.out.println("**********************************");
 
-            System.out.print("선택하세요: ");
+            System.out.print("학생! 무엇을 하러 왔어요?: ");
             int choice = scanner.nextInt();
 
             switch (choice) {

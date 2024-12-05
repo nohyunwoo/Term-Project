@@ -169,9 +169,9 @@ public class ProcessEnrollmentRequest {
 
             int rowsInserted = insertStmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("ENROLLMENT_REQUEST_ADMIN 테이블에 데이터가 추가되었습니다.");
+                System.out.println("요청 처리 기록 테이블에 데이터가 추가되었습니다.");
             } else {
-                System.out.println("ENROLLMENT_REQUEST_ADMIN 테이블에 데이터 추가에 실패했습니다.");
+                System.out.println("요청 처리 기록 테이블에 데이터 추가에 실패했습니다.");
             }
         }
     }

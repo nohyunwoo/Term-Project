@@ -265,7 +265,7 @@ public class StudentService {
             System.out.println("가입하려는 동아리 ID를 입력하세요: ");
             int clubId = scanner.nextInt();
 
-            System.out.println("학생 ID를 입력하세요: ");
+            System.out.println("학생 학번을 입력하세요: ");
             int studentId = scanner.nextInt();
 
             // EnrollmentRequest 객체 생성 및 값 설정
@@ -304,7 +304,7 @@ public class StudentService {
             Scanner scanner = new Scanner(System.in);
 
             // 사용자로부터 StudentID 입력 받기
-            System.out.println("조회할 학생 ID를 입력하세요: ");
+            System.out.println("조회할 학생 학번을 입력하세요: ");
             int studentId = scanner.nextInt();
 
             try (Connection connection = DatabaseConnection.getConnection()) {

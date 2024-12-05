@@ -381,6 +381,68 @@ public class AdminService {
 	    }
 	}
 
+	public static void viewEnrollmentRequestAdminRecords() {
+	    try (Connection connection = DatabaseConnection.getConnection()) {
+	        // SQL 쿼리 실행
+	        String query = "SELECT RequestID, AdminID, ProcessDate FROM ENROLLMENT_REQUEST_ADMIN";
+	        Statement statement = connection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query);
+
+	        System.out.println("요청 처리 기록:");
+	        System.out.println("*********************************************************");
+	        System.out.printf("%-10s %-10s %-20s%n", "RequestID", "AdminID", "ProcessDate");
+	        System.out.println("*********************************************************");
+
+	        while (resultSet.next()) {
+	            int requestId = resultSet.getInt("RequestID");
+	            int adminId = resultSet.getInt("AdminID");
+	            String processDate = resultSet.getString("ProcessDate");
+
+	            System.out.printf("%-10d %-10d %-20s%n", requestId, adminId, processDate);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("요청 처리 기록 조회 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+	
+	public static void deleteStudyGroup() {
+	    Scanner scanner = new Scanner(System.in);
+
+	    System.out.println("삭제할 스터디 그룹 ID를 입력하세요: ");
+	    int studyGroupId = scanner.nextInt();
+
+	    try (Connection connection = DatabaseConnection.getConnection()) {
+	        // 먼저 STUDY_GROUP_MEMBER에서 관련 데이터 삭제
+	        String deleteMembersQuery = "DELETE FROM STUDY_GROUP_MEMBER WHERE StudyGroupID = ?";
+	        PreparedStatement deleteMembersStmt = connection.prepareStatement(deleteMembersQuery);
+	        deleteMembersStmt.setInt(1, studyGroupId);
+
+	        int memberRowsDeleted = deleteMembersStmt.executeUpdate();
+	        if (memberRowsDeleted > 0) {
+	            System.out.println("스터디 그룹의 멤버 데이터가 삭제되었습니다.");
+	        } else {
+	            System.out.println("스터디 그룹의 멤버 데이터가 없습니다.");
+	        }
+
+	        // STUDY_GROUP 테이블에서 스터디 그룹 삭제
+	        String deleteGroupQuery = "DELETE FROM STUDY_GROUP WHERE StudyGroupID = ?";
+	        PreparedStatement deleteGroupStmt = connection.prepareStatement(deleteGroupQuery);
+	        deleteGroupStmt.setInt(1, studyGroupId);
+
+	        int groupRowsDeleted = deleteGroupStmt.executeUpdate();
+	        if (groupRowsDeleted > 0) {
+	            System.out.println("스터디 그룹이 성공적으로 삭제되었습니다!");
+	        } else {
+	            System.out.println("삭제할 스터디 그룹을 찾을 수 없습니다.");
+	        }
+
+	    } catch (Exception e) {
+	        System.err.println("스터디 그룹 삭제 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+
     
     
 }
