@@ -7,7 +7,6 @@ import service.ProcessEnrollmentRequest;
 public class AdminMenu {
     public static void showMenu() {
         Scanner scanner = new Scanner(System.in);
-//        AdminService adminService = new AdminService();
 
         while (true) {
             System.out.println("**************************************************************************");
