@@ -23,7 +23,7 @@ public class ProcessEnrollmentRequest {
 
 	        System.out.println("Pending Enrollment Requests:");
 	        while (resultSet.next()) {
-	            // 요청 데이터 출력
+	            
 	            int requestId = resultSet.getInt("RequestID");
 	            int studentId = resultSet.getInt("StudentID");
 	            int clubId = resultSet.getInt("ClubID");
@@ -60,7 +60,7 @@ public class ProcessEnrollmentRequest {
 	}
 
 	private static void handleAcceptRequest(Connection connection, int requestId, int adminId) throws Exception {
-	    // 승인된 요청 정보 가져오기
+	    // 승인된 요청 정보 가져옴
 	    String fetchRequestQuery = "SELECT StudentID, ClubID, StudyGroupID FROM ENROLLMENT_REQUEST WHERE RequestID = ?";
 	    PreparedStatement fetchStmt = connection.prepareStatement(fetchRequestQuery);
 	    fetchStmt.setInt(1, requestId);

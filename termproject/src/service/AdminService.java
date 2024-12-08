@@ -260,7 +260,7 @@ public class AdminService {
             }
 
             if (!clubExists) {
-                System.out.println("해당 ClubID는 존재하지 않습니다. 스터디 그룹 추가를 중단합니다.");
+                System.out.println("해당 ClubID는 존재하지 않습니다.");
                 return;
             }
 
@@ -272,9 +272,9 @@ public class AdminService {
 
             int rowsInserted = insertStmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("스터디 그룹이 성공적으로 추가되었습니다!");
+                System.out.println("스터디 그룹 추가 완료");
             } else {
-                System.out.println("스터디 그룹 추가에 실패했습니다.");
+                System.out.println("스터디 그룹 추가 실패.");
             }
 
         } catch (Exception e) {
@@ -313,7 +313,7 @@ public class AdminService {
 	    int clubId = scanner.nextInt();
 
 	    try (Connection connection = DatabaseConnection.getConnection()) {
-	        // SQL 쿼리
+	        
 	        String query = "SELECT sgm.StudyGroupID, sg.StudyGroupName, s.StudentID, s.Name AS StudentName, c.ClubName " +
 	                       "FROM STUDY_GROUP_MEMBER sgm " +
 	                       "JOIN STUDY_GROUP sg ON sgm.StudyGroupID = sg.StudyGroupID " +
@@ -355,7 +355,7 @@ public class AdminService {
 	
 	public static void viewAllStudents() {
 	    try (Connection connection = DatabaseConnection.getConnection()) {
-	        // SQL 쿼리 실행
+	        
 	        String query = "SELECT StudentID, Name, Age, Sex, PhoneNumber, UniversityName FROM STUDENT";
 	        Statement statement = connection.createStatement();
 	        ResultSet resultSet = statement.executeQuery(query);
