@@ -56,9 +56,9 @@ public class AdminService {
 
 	        int rowsInserted = preparedStatement.executeUpdate();
 	        if (rowsInserted > 0) {
-	            System.out.println("New club added successfully!");
+	            System.out.println("동아리 등록 완료!");
 	        } else {
-	            System.out.println("Failed to add club.");
+	            System.out.println("동아리 등록 실패");
 	        }
 
 	    } catch (Exception e) {
@@ -70,6 +70,28 @@ public class AdminService {
     
 	public static void deleteClub() {
 	    Scanner scanner = new Scanner(System.in);
+	    
+	    try (Connection connection = DatabaseConnection.getConnection()) {
+	        // SQL 실행
+	        String query = "SELECT ClubID, ClubName, UniversityName FROM CLUB";
+	        Statement statement = connection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query);
+
+	        System.out.println("Clubs List:");
+	        while (resultSet.next()) {
+	            // Club 객체 생성 및 데이터 설정
+	            Club club = new Club();
+	            club.setClubId(resultSet.getInt("ClubID"));
+	            club.setClubName(resultSet.getString("ClubName"));
+
+	            // Club 객체 데이터 출력
+	            System.out.printf("Club ID: %d, Name: %s%n", club.getClubId(), club.getClubName());
+	        }
+
+	    } catch (Exception e) {
+	        System.err.println("Error occurred while fetching clubs: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	    
 	    // 사용자 입력 받기
 	    System.out.println("삭제할 클럽 ID를 입력하세요: ");

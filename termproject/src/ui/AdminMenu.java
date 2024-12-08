@@ -29,6 +29,7 @@ public class AdminMenu {
                     break;
                 case 3:
                     AdminService.deleteClub(); // 동아리 삭제 
+                    break;
                 case 4:
                     AdminService.viewClubMember(); // 동아리 멤버 조회
                     break;
