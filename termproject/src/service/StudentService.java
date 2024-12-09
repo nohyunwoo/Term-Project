@@ -84,7 +84,7 @@ public class StudentService {
         int studentId = scanner.nextInt();
         
         try (Connection connection = DatabaseConnection.getConnection()) {
-            // SQL 실행: 해당 ClubID에 속한 스터디 그룹 정보 가져오기
+            // ClubID에 속한 스터디 그룹 정보 가져오기
             String query = "SELECT StudyGroupID, StudyGroupName, ClubID FROM STUDY_GROUP WHERE ClubID = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, clubId);
@@ -218,7 +218,7 @@ public class StudentService {
         
         public static void applyForClub() {
         	try (Connection connection = DatabaseConnection.getConnection()) {
-    	        // SQL 실행
+    
     	        String query = "SELECT ClubID, ClubName, UniversityName FROM CLUB";
     	        Statement statement = connection.createStatement();
     	        ResultSet resultSet = statement.executeQuery(query);
@@ -256,7 +256,7 @@ public class StudentService {
             request.setRequestDate(java.time.LocalDate.now().toString()); // 현재 날짜 설정
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                // SQL 실행
+               
                 String query = "INSERT INTO ENROLLMENT_REQUEST (Status, RequestDate, StudentID, ClubID, StudyGroupID) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
 
@@ -298,7 +298,7 @@ public class StudentService {
 
                 System.out.println("Enrollment Requests for Student ID: " + studentId);
                 System.out.println("=================================================");
-                boolean hasResults = false; // 결과가 있는지 확인하기 위한 플래그
+                boolean hasResults = false; // 결과가 있는지 확인
 
                 while (resultSet.next()) {
                     hasResults = true;
