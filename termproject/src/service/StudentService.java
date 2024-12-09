@@ -12,27 +12,6 @@ import entity.Student;
 import entity.StudyGroup;
 
 public class StudentService {
-
-    public static void applyForMembership() {
-        Scanner scanner = new Scanner(System.in);
-
-        // 가입 신청 유형 선택
-        System.out.println("신청할 유형을 선택하세요:");
-        System.out.println("1. 동아리 가입");
-        System.out.println("2. 스터디 가입");
-        int choice = scanner.nextInt();
-
-        if (choice == 1) {
-            // 동아리 생성 신청
-            createForClub();
-        } else if (choice == 2) {
-            // 스터디 생성 신청
-            applyForStudyGroup();
-        } else {
-            System.out.println("잘못된 선택입니다. 다시 시도하세요.");
-        }
-    }
-
     // 동아리 가입 신청
     public static void createForClub() {
         Scanner scanner = new Scanner(System.in);
@@ -199,7 +178,7 @@ public class StudentService {
             System.out.println("학생 전화번호를 입력하세요: ");
             String phoneNumber = scanner.nextLine();
 
-            // UniversityName은 기본값 'Chungbuk University'로 설정됨
+           
             String universityName = "Chungbuk University";
 
             // Student 객체 생성 및 값 설정
